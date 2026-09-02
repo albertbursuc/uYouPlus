@@ -139,7 +139,7 @@ jobs:
           
           cd ${{ github.workspace }}/main
 
-          sed -i '' '31s/%orig;/%orig.mutableCopy;/' Tweaks/Return-YouTube-Dislikes/Settings.x
+          sed -i '' '31s#.*#    NSMutableArray *mutableCategories = [%orig mutableCopy];#' Tweaks/Return-YouTube-Dislikes/Settings.x
           grep -n "mutableCategories" Tweaks/Return-YouTube-Dislikes/Settings.x
           
           sed -i '' "27s#.*#BUNDLE_ID = ${{ env.BUNDLE_ID }}#g" Makefile
