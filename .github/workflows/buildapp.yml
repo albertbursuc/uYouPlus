@@ -138,9 +138,22 @@ jobs:
 
           
           cd ${{ github.workspace }}/main
+          python3 - <<'PY'
+          from pathlib import Path
 
-          perl -0pi -e 's/    NSMutableArray \*mutableCategories = %orig;/    NSArray *categories = %orig;\n    NSMutableArray *mutableCategories = [categories mutableCopy];/' Tweaks/Return-YouTube-Dislikes/Settings.x
+          p = Path("Tweaks/Return-YouTube-Dislikes/Settings.x")
+          s = p.read_text()
+
+          old = "    NSMutableArray *mutableCategories = %orig;"
+          new = """    NSArray *categories = %orig;
+          NSMutableArray *mutableCategories = [categories mutableCopy];"""
+
+          assert old in s, "Nu am găsit linia originală în Settings.x"
+          p.write_text(s.replace(old, new, 1))
+          PY
+
           sed -n '29,35p' Tweaks/Return-YouTube-Dislikes/Settings.x
+          
           
           sed -i '' "27s#.*#BUNDLE_ID = ${{ env.BUNDLE_ID }}#g" Makefile
           sed -i '' "26s#.*#DISPLAY_NAME = ${{ env.APP_NAME }}#g" Makefile
